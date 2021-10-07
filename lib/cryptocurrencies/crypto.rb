@@ -17,12 +17,17 @@ class Crypto
   def smallest
     # Groupe les devises par valeur, cherche la valeur minimum parmis les différents groupes créés, puis formate le résultat pour avoir un plus bel affichage
     result = @currencies.group_by{|k, v| v.to_f}.min_by(&:first).last.map{|k, v| "\e[92m#{k.ljust(20)}\e[0m => \e[36m#{v}\e[0m\n"}.join
-    "Les devises qui ont la plus grande valeur sont : \n\n" + result
+    "Les devises qui ont la plus petite valeur sont : \n\n" + result
   end
 
   def under_6k
     # Filtre le hash pour ne garder que les devises dont la valeur est inférieure à 6000, les trie de la plus petite à la plus grande, puis les formatent pour avoir un plus bel affichage
-    @currencies.select{|k, v| v.to_f < 6000}.sort{|a, b| b[1].to_f <=> a[1].to_f}.map{|k, v| "\e[92m#{k.ljust(20)}\e[0m => \e[36m#{v}\e[0m"}
+    result = ""
+    @currencies.select{|k, v| v.to_f < 6000}.sort{|a, b| b[1].to_f <=> a[1].to_f}.each_with_index.map{|a, i| 
+      result += "\e[92m#{a[0].ljust(20)}\e[0m => \e[36m#{a[1].ljust(10)}\e[0m"
+      result += "\n" if i % 4 == 3
+    }
+    result
   end
 
   def biggest_under_6k
